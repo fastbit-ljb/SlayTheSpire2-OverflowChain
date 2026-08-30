@@ -1,5 +1,6 @@
 using System.Linq;
 using System.Threading.Tasks;
+using Godot;
 using MegaCrit.Sts2.Core.Combat;
 using MegaCrit.Sts2.Core.Commands;
 using MegaCrit.Sts2.Core.Entities.Creatures;
@@ -38,6 +39,7 @@ public sealed class OverflowChain : RelicModel
         decimal overflow = result.OverkillDamage;
         Creature from = target;
         bool flashed = false;
+        Vector2? prevCenter = OverflowVfx.GetCenter(from);
         while (overflow > 0)
         {
             Creature? next = combatState.HittableEnemies.FirstOrDefault(e => e != from);
@@ -48,9 +50,20 @@ public sealed class OverflowChain : RelicModel
             if (!flashed)
             {
                 Flash();
+                SfxCmd.Play(OverflowVfx.EvokeSfx);
                 flashed = true;
             }
+            // Custom shock layer (body glow + arcs + hop-to-hop bolts) on top of
+            // the vanilla strike. Centers are captured before each hit so a dying
+            // monster still anchors its bolt.
+            Vector2 nextCenter = OverflowVfx.GetCenter(next) ?? prevCenter ?? Vector2.Zero;
+            if (prevCenter.HasValue)
+            {
+                OverflowVfx.PlayBolt(prevCenter.Value, nextCenter);
+            }
+            OverflowVfx.PlayHop(next);
             VfxCmd.PlayOnCreature(next, VfxCmd.lightningPath);
+            prevCenter = nextCenter;
             var results = await CreatureCmd.Damage(choiceContext, next, overflow, ValueProp.Unpowered | ValueProp.SkipHurtAnim, Owner.Creature);
             DamageResult? nextResult = results.FirstOrDefault(r => r.Receiver == next);
             overflow = (nextResult != null && nextResult.WasTargetKilled) ? nextResult.OverkillDamage : 0;
