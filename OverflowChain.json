@@ -1,0 +1,12 @@
+{
+  "id": "OverflowChain",
+  "name": "Overflow Chain",
+  "author": "fastbit-ljb",
+  "description": "Adds a new rare relic: Overflow Chain. When your Attack kills an enemy, the excess damage chains to the next enemy - and keeps chaining on every overkill until it runs out or no enemies remain. 新增稀有遗物：溢出链。你的攻击击杀敌人时，溢出的伤害会弹向下一个敌人；若再次击杀并溢出，则继续弹向下一个，直到溢出耗尽或没有敌人。",
+  "version": "0.1.0",
+  "has_pck": true,
+  "has_dll": true,
+  "dependencies": [],
+  "affects_gameplay": true,
+  "min_game_version": "0.111.0"
+}

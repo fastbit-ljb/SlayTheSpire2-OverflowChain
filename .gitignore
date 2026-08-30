@@ -1,0 +1,6 @@
+bin/
+obj/
+build/
+*.user
+mod-uploader.log
+tools/__pycache__/
