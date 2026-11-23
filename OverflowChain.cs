@@ -62,7 +62,8 @@ public sealed class OverflowChain : RelicModel
                 OverflowVfx.PlayBolt(prevCenter.Value, nextCenter);
             }
             OverflowVfx.PlayHop(next);
-            VfxCmd.PlayOnCreature(next, VfxCmd.lightningPath);
+            // This overload is shared by the stable and beta game builds.
+            VfxCmd.PlayOnCreatures([next], VfxCmd.lightningPath);
             prevCenter = nextCenter;
             var results = await CreatureCmd.Damage(choiceContext, next, overflow, ValueProp.Unpowered | ValueProp.SkipHurtAnim, Owner.Creature);
             DamageResult? nextResult = results.FirstOrDefault(r => r.Receiver == next);
